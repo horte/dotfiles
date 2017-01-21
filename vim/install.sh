@@ -1,0 +1,1 @@
+curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > /tmp/install-neobundle.sh && $SHELL -c "chmod +x /tmp/install-neobundle.sh" && $SHELL -c "/tmp/install-neobundle.sh"

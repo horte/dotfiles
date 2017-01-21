@@ -8,3 +8,9 @@ then
   alias ll="gls -l --color"
   alias la='gls -A --color'
 fi
+
+# cd to follow symlinks
+alias cdp='cd -P'
+
+alias showAllFiles='defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder'
+alias hideAllFiles='defaults delete com.apple.finder AppleShowAllFiles && killall Finder'

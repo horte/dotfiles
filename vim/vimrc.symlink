@@ -1,4 +1,267 @@
+" Preconditions
+" brew install ag
+" brew install ctags-exuberant
+" npm install -g editorconfig
+
+" NeoBundle Start
+" Note: Skip initialization for vim-tiny or vim-small.
+ if 0 | endif
+
+ if has('vim_starting')
+   if &compatible
+     set nocompatible               " Be iMproved
+   endif
+
+   " Required:
+   set runtimepath+=~/.vim/bundle/neobundle.vim/
+ endif
+
+ " Required:
+ call neobundle#begin(expand('~/.vim/bundle/'))
+
+ " Let NeoBundle manage NeoBundle
+ " Required:
+ NeoBundleFetch 'Shougo/neobundle.vim'
+
+ " My Bundles here:
+
+  NeoBundle 'scrooloose/nerdtree'
+  NeoBundle 'scrooloose/syntastic'
+  NeoBundle 'altercation/vim-colors-solarized'
+  NeoBundle 'tomtom/tcomment_vim'
+  NeoBundle 'kien/ctrlp.vim'
+  NeoBundle 'ervandew/supertab'
+  NeoBundle 'leafgarland/typescript-vim'
+  NeoBundle 'jason0x43/vim-js-indent'
+  NeoBundle 'yggdroot/indentline'
+  NeoBundle 'benekastah/neomake'
+
+  " Airline status bar.
+  NeoBundle 'bling/vim-airline'
+
+  " Git plugins
+  NeoBundle 'tpope/vim-fugitive'
+  NeoBundle 'airblade/vim-gitgutter'
+
+  "  All about surroundings: parentheses, brackets, quotes, XML tags, and more.
+  NeoBundle 'tpope/vim-surround'
+
+  " Additional key mappings
+  " NeoBundle 'tpope/vim-unimpared'
+
+  " JSON plugins
+  NeoBundle 'elzr/vim-json'
+ 
+  " Auto completion
+ NeoBundle 'Valloric/YouCompleteMe'
+
+ " Javascript plugins
+ NeoBundle 'marijnh/tern_for_vim'
+ NeoBundle 'pangloss/vim-javascript'
+
+  " vim interface for webapi and gist
+  NeoBundle 'mattn/webapi-vim'
+  NeoBundle 'mattn/gist-vim'
+
+  " displays tags in a window, ordered by scope
+  NeoBundle 'majutsushi/tagbar'
+
+  " Provides insert mode auto-completion for quotes, parens, brackets, etc.
+  NeoBundle 'Raimondi/delimitMate'
+
+  " search in files and directories. like ack but faster
+  NeoBundle 'rking/ag.vim'
+
+  " PHP plugins
+  NeoBundle 'StanAngeloff/php.vim'
+  NeoBundle 'shawncplus/phpcomplete.vim'
+
+  " Editor settings
+  NeoBundle 'editorconfig/editorconfig-vim'
+
+ call neobundle#end()
+
+ " Required:
+ filetype plugin indent on
+
+ " If there are uninstalled bundles found on startup,
+ " this will conveniently prompt you to install them.
+ NeoBundleCheck
+" NeoBundle End
+
+" Set leader
+let mapleader=","
+
+" jk is escape
+inoremap jk <esc>
+inoremap kj <esc>
+
+" Include line wrapped lines
+nmap j gj
+nmap k gk
+
+" Window Navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+let &t_Co=256
+
+" Set tab
+set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+
+" Toggle set paste
+set pastetoggle=<F2>
+
+" Enable line numbers
+" set relativenumber
+set number
+
+" Highlight cursor line
+set cursorline
+highlight Cursor guifg=white guibg=black
+highlight iCursor guifg=white guibg=steelblue
+set guicursor=n-v-c:block-Cursor
+set guicursor+=i:ver25-iCursor
+set guicursor+=n-v-c:blinkon0
+set guicursor+=i:blinkwait10
+if $TERM_PROGRAM =~ "iTerm"
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
+endif
+
+" Disable bell
+set visualbell t_vb=
+
+" visual autocomplete for command menu
+set wildmenu
+
+" Color Settings
+colorscheme solarized
+set background=light
+
+" Automatically refresh buffer if file is changed on disk
+set autoread
+
+" Enable syntax highlighting
 syntax on
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+" Add .js when using gf
+set suffixesadd+=.js
+
+" Toggle NerdTree
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeChDirMode = 2
+
+
+" Set tabstop, softtabstop and shiftwidth to the same value
+" http://vimcasts.org/episodes/tabs-and-spaces/
+command! -nargs=* Stab call Stab()
+function! Stab()
+  let l:tabstop = 1 * input('set tabstop = softtabstop = shiftwidth = ')
+  if l:tabstop > 0
+    let &l:sts = l:tabstop
+    let &l:ts = l:tabstop
+    let &l:sw = l:tabstop
+  endif
+  call SummarizeTabs()
+endfunction
+
+function! SummarizeTabs()
+  try
+    echohl ModeMsg
+    echon 'tabstop='.&l:ts
+    echon ' shiftwidth='.&l:sw
+    echon ' softtabstop='.&l:sts
+    if &l:et
+      echon ' expandtab'
+    else
+      echon ' noexpandtab'
+    endif
+  finally
+    echohl None
+  endtry
+endfunction
+
+" Syntastic settings
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_javascript_checkers = []
+autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc', '.;') !=# '' ? ['eslint'] : []" let g:syntastic_javascript_checkers = []
+" let g:syntastic_javascript_checkers = ['eslint']
+" if findfile('.eslintrc', '.;') !=# ''
+"     let g:syntastic_javascript_checkers = ['eslint']
+" endif
+"autocmd FileType javascript let g:syntastic_javascript_checkers = syntastic#util#findFileInParent('.eslintrc.js', expand('%:p:h', 1)) !=# '' ? ['eslint'] : []
+let g:syntastic_javascript_eslint_exec = 'eslint_d'
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+
+" Disable backup and swap files
+set nobackup
+set noswapfile
+set backupdir=/tmp              " where to put backup files
+set directory=/tmp                " where to put swap files
+set undodir=/tmp
+
+" Set encoding to utf-8
+if !has('nvim')
+  set encoding=utf-8
+endif
+
+set fileformat=unix
+
+" Highlight search results
+set hlsearch
+
+" turn off search highlight
+nnoremap <leader>m :nohlsearch<CR>
+
+" Automatically search when typing
+set incsearch
+
+" Ignore case for searches
+set ignorecase
+set laststatus=2
+set splitright
+set title
+set wrap
+
+" Show matching brackets
+set showmatch
+
+" Copy to system clipboard
+set clipboard=unnamed
+
+" Ctrlp Plugin Settings
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux"
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  'bower_components\|dist\|node_modules\|\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+let g:ctrlp_match_window = 'bottom,order:ttb'
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_user_command = '/usr/local/bin/ag %s -l --nocolor --hidden -g ""'
+
+" Airline Plugin Settings 
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+ 
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
+
+" Tagbar Settings
+nmap <leader>b :TagbarToggle<CR>
+
+" Tern Settings
+" Tern mappings
+nmap <leader>tr :TernRefs<Enter>

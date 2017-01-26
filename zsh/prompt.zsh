@@ -59,6 +59,20 @@ battery_status() {
 }
 
 export PROMPT=$'\n$(directory_name) $(git_dirty)$(need_push)\n› '
+
+# update to show VIM mode using zle widgets
+# https://dougblack.io/words/zsh-vi-mode.html
+function zle-line-init zle-keymap-select {
+  VIM_PROMPT="%{$fg_bold[yellow]%} [% NORMAL]% %{$reset_color%}"
+  RPS1="${${KEYMAP/vicmd/$VIM_PROMPT}/(main|viins)/} ${git_dirty} $EPS1"
+  zle reset-prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+export KEYTIMEOUT=1
+
 set_prompt () {
   export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
 }

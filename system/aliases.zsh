@@ -14,3 +14,8 @@ alias cdp='cd -P'
 
 alias showAllFiles='defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder'
 alias hideAllFiles='defaults delete com.apple.finder AppleShowAllFiles && killall Finder'
+
+# One of @janmoesen’s ProTip™s
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+ alias "$method"="lwp-request -m '$method'"
+done

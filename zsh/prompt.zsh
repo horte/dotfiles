@@ -51,7 +51,8 @@ need_push () {
 }
 
 directory_name() {
-  echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
+  # Print the working dir and its parent (2 levels)
+  echo "%{$fg_bold[cyan]%}%2/%\/%{$reset_color%}"
 }
 
 battery_status() {

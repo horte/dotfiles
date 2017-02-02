@@ -32,3 +32,4 @@ setopt HIST_REDUCE_BLANKS
 setopt complete_aliases
 
 bindkey -e
+bindkey "^[[3~" delete-char

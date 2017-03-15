@@ -13,7 +13,7 @@ brew 'openssl'
 brew 'wget'
 brew 'yarn'
 brew 'zsh'
-brew 'vim', args: ['--override-system-vim']
+brew 'vim', args: ['--override-system-vi']
 
 cask 'docker'
 cask 'docker-toolbox'

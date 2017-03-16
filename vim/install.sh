@@ -1,1 +1,2 @@
-curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > /tmp/install-neobundle.sh && $SHELL -c "chmod +x /tmp/install-neobundle.sh" && $SHELL -c "/tmp/install-neobundle.sh"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+

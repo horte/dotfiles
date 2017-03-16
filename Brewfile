@@ -4,7 +4,9 @@ tap 'caskroom/cask'
 tap 'homebrew/bundle'
 
 brew 'ack'
+brew 'the_silver_searcher' # Like ack but much faster. I use it in vim ctrlp
 brew 'awscli'
+brew 'cmake'
 brew 'coreutils' # GNU core utilities (those that come with macOS are outdated)
 brew 'jq'
 brew 'libyaml'

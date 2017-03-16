@@ -1,3 +1,6 @@
+" Backspace enable
+set backspace=indent,eol,start
+
 " Set leader
 let mapleader=","
 
@@ -32,9 +35,7 @@ set cursorline
 highlight Cursor guifg=white guibg=black
 highlight iCursor guifg=white guibg=steelblue
 set guicursor=n-v-c:block-Cursor
-set guicursor+=i:ver25-iCursor
 set guicursor+=n-v-c:blinkon0
-set guicursor+=i:blinkwait10
 if $TERM_PROGRAM =~ "iTerm"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
     let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
@@ -46,10 +47,6 @@ set visualbell t_vb=
 " visual autocomplete for command menu
 set wildmenu
 
-" Color Settings
-" colorscheme solarized
-" set background=light
-
 " Automatically refresh buffer if file is changed on disk
 set autoread
 
@@ -58,11 +55,6 @@ syntax on
 
 " Add .js when using gf
 set suffixesadd+=.js
-
-" Toggle NerdTree
-map <C-n> :NERDTreeToggle<CR>
-let g:NERDTreeChDirMode = 2
-
 
 " Set tabstop, softtabstop and shiftwidth to the same value
 " http://vimcasts.org/episodes/tabs-and-spaces/
@@ -97,19 +89,6 @@ endfunction
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
-
-let g:syntastic_javascript_checkers = []
-autocmd FileType javascript let b:syntastic_checkers = findfile('.eslintrc', '.;') !=# '' ? ['eslint'] : []" let g:syntastic_javascript_checkers = []
-" let g:syntastic_javascript_checkers = ['eslint']
-" if findfile('.eslintrc', '.;') !=# ''
-"     let g:syntastic_javascript_checkers = ['eslint']
-" endif
-"autocmd FileType javascript let g:syntastic_javascript_checkers = syntastic#util#findFileInParent('.eslintrc.js', expand('%:p:h', 1)) !=# '' ? ['eslint'] : []
-let g:syntastic_javascript_eslint_exec = 'eslint_d'
-let g:syntastic_always_populate_loc_list = 0
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
 
 " Disable backup and swap files
 set nobackup
@@ -147,30 +126,105 @@ set showmatch
 " Copy to system clipboard
 set clipboard=unnamed
 
-" Ctrlp Plugin Settings
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux"
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  'bower_components\|dist\|node_modules\|\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_user_command = '/usr/local/bin/ag %s -l --nocolor --hidden -g ""'
-
-" Airline Plugin Settings 
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#enabled=1
- 
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline_symbols.space = "\ua0"
 
 " Tagbar Settings
 nmap <leader>b :TagbarToggle<CR>
 
-" Tern Settings
-" Tern mappings
-nmap <leader>tr :TernRefs<Enter>
+" Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+call plug#begin('~/.vim/plugged')
+  Plug 'pangloss/vim-javascript'
+  Plug 'moll/vim-node'
+  Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+  Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
+  Plug 'benekastah/neomake'
+  Plug 'kien/ctrlp.vim'
+  Plug 'scrooloose/nerdtree'
+  Plug 'altercation/vim-colors-solarized'
+  Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-commentary'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'vim-airline/vim-airline'
+" Initialize plugin system
+call plug#end()
+
+
+if &runtimepath =~ 'airline'
+
+  " Airline Plugin Settings 
+  " let g:airline_powerline_fonts = 1
+  let g:airline#extensions#tabline#enabled=1
+   
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+  let g:airline_symbols.space = "\ua0"
+endif
+
+if &runtimepath =~ 'tern_for_vim'
+  nmap <leader>tr :TernRefs<Enter>
+  nmap <leader>tR :TernRename<Enter>
+  nmap <leader>td :TernDef<Enter>
+  nmap <leader>tD :TernDoc<Enter>
+endif
+
+if &runtimepath =~ 'neomake'
+  " https://github.com/neomake/neomake/issues/247
+  function! NeomakeESlintChecker()
+    let l:npm_bin = ''
+    let l:eslint = 'eslint'
+
+    if executable('npm-which')
+      let l:eslint = split(system('npm-which eslint'))[0]
+      return 0
+    endif
+
+    if executable('npm')
+      let l:npm_bin = split(system('npm bin'), '\n')[0]
+    endif
+
+    if strlen(l:npm_bin) && executable(l:npm_bin . '/eslint')
+      let l:eslint = l:npm_bin . '/eslint'
+    endif
+  endfunction
+
+  autocmd FileType javascript :call NeomakeESlintChecker()
+ 
+ 
+  let g:neomake_javascript_enabled_makers= ['eslint']
+
+  " load local eslint in the project root
+  " modified from https://github.com/mtscout6/syntastic-local-eslint.vim
+  " let s:eslint_path = system('PATH=$(npm bin):$PATH && which eslint')
+  " let g:neomake_javascript_eslint_exe = substitute(s:eslint_path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+ " let g:neomake_javascript_eslint_exe = './node_modules/.bin/eslint'
+
+ " let g:neomake_javascript_enabled_makers = ['eslint']
+endif
+
+if &runtimepath =~ 'nerdtree'
+  " Toggle NerdTree
+  map <C-n> :NERDTreeToggle<CR>
+  let g:NERDTreeChDirMode = 2
+endif
+
+if &runtimepath =~ 'vim-colors-solarized'
+  syntax enable
+  set background=light
+  let g:solarized_termcolors=256
+  colorscheme solarized
+endif
+
+if &runtimepath =~ 'ctrlp'
+  " Ctrlp Plugin Settings
+  set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux"
+  let g:ctrlp_custom_ignore = {
+    \ 'dir':  'bower_components\|dist\|node_modules\|\v[\/]\.(git|hg|svn)$',
+    \ 'file': '\v\.(exe|so|dll)$',
+    \ 'link': 'some_bad_symbolic_links',
+    \ }
+  let g:ctrlp_match_window = 'bottom,order:ttb'
+  let g:ctrlp_switch_buffer = 0
+  let g:ctrlp_working_path_mode = 0
+  let g:ctrlp_user_command = '/usr/local/bin/ag %s -l --nocolor --hidden -g ""'
+endif
+

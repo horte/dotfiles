@@ -50,6 +50,10 @@ set wildmenu
 " Automatically refresh buffer if file is changed on disk
 set autoread
 
+" Change between buffers
+map <Leader>a :bprev<Return>
+map <Leader>s :bnext<Return>
+
 " Enable syntax highlighting
 syntax on
 
@@ -84,11 +88,6 @@ function! SummarizeTabs()
     echohl None
   endtry
 endfunction
-
-" Syntastic settings
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
 
 " Disable backup and swap files
 set nobackup
@@ -136,14 +135,17 @@ call plug#begin('~/.vim/plugged')
   Plug 'moll/vim-node'
   Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
-  Plug 'benekastah/neomake'
+  Plug 'scrooloose/syntastic'
   Plug 'kien/ctrlp.vim'
   Plug 'scrooloose/nerdtree'
   Plug 'altercation/vim-colors-solarized'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-surround'
   Plug 'airblade/vim-gitgutter'
   Plug 'vim-airline/vim-airline'
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'mileszs/ack.vim'
 " Initialize plugin system
 call plug#end()
 
@@ -167,38 +169,17 @@ if &runtimepath =~ 'tern_for_vim'
   nmap <leader>tD :TernDoc<Enter>
 endif
 
-if &runtimepath =~ 'neomake'
-  " https://github.com/neomake/neomake/issues/247
-  function! NeomakeESlintChecker()
-    let l:npm_bin = ''
-    let l:eslint = 'eslint'
+if &runtimepath =~ 'syntastic'
+  set statusline+=%#warningmsg#
+  set statusline+=%{SyntasticStatuslineFlag()}
+  set statusline+=%*
 
-    if executable('npm-which')
-      let l:eslint = split(system('npm-which eslint'))[0]
-      return 0
-    endif
-
-    if executable('npm')
-      let l:npm_bin = split(system('npm bin'), '\n')[0]
-    endif
-
-    if strlen(l:npm_bin) && executable(l:npm_bin . '/eslint')
-      let l:eslint = l:npm_bin . '/eslint'
-    endif
-  endfunction
-
-  autocmd FileType javascript :call NeomakeESlintChecker()
- 
- 
-  let g:neomake_javascript_enabled_makers= ['eslint']
-
-  " load local eslint in the project root
-  " modified from https://github.com/mtscout6/syntastic-local-eslint.vim
-  " let s:eslint_path = system('PATH=$(npm bin):$PATH && which eslint')
-  " let g:neomake_javascript_eslint_exe = substitute(s:eslint_path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
- " let g:neomake_javascript_eslint_exe = './node_modules/.bin/eslint'
-
- " let g:neomake_javascript_enabled_makers = ['eslint']
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 0
+  let g:syntastic_check_on_open = 0
+  let g:syntastic_check_on_wq = 0
+  let g:syntastic_javascript_checkers = ['eslint']
+  let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
 endif
 
 if &runtimepath =~ 'nerdtree'
@@ -209,7 +190,7 @@ endif
 
 if &runtimepath =~ 'vim-colors-solarized'
   syntax enable
-  set background=light
+  set background=dark
   let g:solarized_termcolors=256
   colorscheme solarized
 endif
@@ -228,3 +209,12 @@ if &runtimepath =~ 'ctrlp'
   let g:ctrlp_user_command = '/usr/local/bin/ag %s -l --nocolor --hidden -g ""'
 endif
 
+if &runtimepath =~ 'editorconfig'
+  let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+endif
+
+if &runtimepath =~ 'ack.vim'
+  if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+  endif
+endif

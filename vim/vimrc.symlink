@@ -135,10 +135,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'moll/vim-node'
   Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
-  Plug 'scrooloose/syntastic'
+  Plug 'w0rp/ale'
   Plug 'kien/ctrlp.vim'
   Plug 'scrooloose/nerdtree'
-  Plug 'altercation/vim-colors-solarized'
+  " Plug 'altercation/vim-colors-solarized'
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-surround'
@@ -146,6 +146,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'vim-airline/vim-airline'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'mileszs/ack.vim'
+  Plug 'sickill/vim-monokai'
 " Initialize plugin system
 call plug#end()
 
@@ -169,30 +170,22 @@ if &runtimepath =~ 'tern_for_vim'
   nmap <leader>tD :TernDoc<Enter>
 endif
 
-if &runtimepath =~ 'syntastic'
-  set statusline+=%#warningmsg#
-  set statusline+=%{SyntasticStatuslineFlag()}
-  set statusline+=%*
-
-  let g:syntastic_always_populate_loc_list = 1
-  let g:syntastic_auto_loc_list = 0
-  let g:syntastic_check_on_open = 0
-  let g:syntastic_check_on_wq = 0
-  let g:syntastic_javascript_checkers = ['eslint']
-  let g:syntastic_javascript_eslint_exe = '$(npm bin)/eslint'
-endif
-
 if &runtimepath =~ 'nerdtree'
   " Toggle NerdTree
   map <C-n> :NERDTreeToggle<CR>
   let g:NERDTreeChDirMode = 2
 endif
 
-if &runtimepath =~ 'vim-colors-solarized'
+" if &runtimepath =~ 'vim-colors-solarized'
+"   syntax enable
+"   set background=dark
+"   let g:solarized_termcolors=256
+"   colorscheme solarized
+" endif
+
+if &runtimepath =~ 'vim-monokai'
   syntax enable
-  set background=dark
-  let g:solarized_termcolors=256
-  colorscheme solarized
+  colorscheme monokai
 endif
 
 if &runtimepath =~ 'ctrlp'

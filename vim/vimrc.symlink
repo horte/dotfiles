@@ -182,13 +182,11 @@ if &runtimepath =~ 'nerdtree'
   let g:NERDTreeHijackNetrw=0
 endif
 
-let base16colorspace=256
-
 if &runtimepath =~ 'base16-vim'
   syntax enable
+  let base16colorspace=256
   colorscheme base16-tomorrow-night
   if filereadable(expand("~/.vimrc_background"))
-    let base16colorspace=256
     source ~/.vimrc_background
   endif
 endif

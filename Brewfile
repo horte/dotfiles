@@ -4,7 +4,6 @@ tap 'caskroom/cask'
 tap 'homebrew/bundle'
 
 brew 'ack'
-brew 'the_silver_searcher' # Like ack but much faster. I use it in vim ctrlp
 brew 'awscli'
 brew 'cmake'
 brew 'coreutils' # GNU core utilities (those that come with macOS are outdated)
@@ -12,10 +11,12 @@ brew 'jq'
 brew 'libyaml'
 brew 'node'
 brew 'openssl'
-brew 'wget'
-brew 'yarn'
-brew 'zsh'
+brew 'reattach-to-user-namespace' #tmux https://evertpot.com/osx-tmux-vim-copy-paste-clipboard/
+brew 'the_silver_searcher' # Like ack but much faster. I use it in vim ctrlp
+brew 'tmux'
 brew 'vim', args: ['--override-system-vi']
+brew 'wget'
+brew 'zsh'
 
 cask 'docker'
 cask 'docker-toolbox'

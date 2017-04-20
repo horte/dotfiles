@@ -2,7 +2,8 @@
 set backspace=indent,eol,start
 
 " Set leader
-let mapleader=","
+" let mapleader=","
+let mapleader="\<space>"
 
 " jk is escape
 inoremap jk <esc>
@@ -59,7 +60,8 @@ syntax on
 
 " Folding method
 set foldmethod=syntax
-set foldlevelstart=4
+set foldlevelstart=2
+set nofoldenable
 let javaScript_fold=1         " JavaScript
 let php_folding=1             " PHP
 let sh_fold_enabled=1         " sh
@@ -184,8 +186,9 @@ endif
 
 if &runtimepath =~ 'base16-vim'
   syntax enable
+  set background=dark
   let base16colorspace=256
-  colorscheme base16-tomorrow-night
+  colorscheme base16-default-dark
   if filereadable(expand("~/.vimrc_background"))
     source ~/.vimrc_background
   endif

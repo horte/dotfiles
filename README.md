@@ -1,4 +1,5 @@
-# holman does dotfiles
+# Dotfiles by Hörte
+(forked and based on holman does dotfiles)
 
 Your dotfiles are how you personalize your system. These are mine.
 
